@@ -1,6 +1,10 @@
+
 ## 🌐 Live Demo
 
 👉 https://govindmishra2006.github.io/To-do-app/
+
+![App Screenshot](screenshot.png)
+
 # 📝 To-Do App
 
 A simple and responsive To-Do List web application that helps users manage daily tasks efficiently.  
