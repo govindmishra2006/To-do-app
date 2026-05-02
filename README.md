@@ -3,7 +3,6 @@
 
 👉 https://govindmishra2006.github.io/To-do-app/
 
-![App Screenshot](Screenshot.png)
 
 # 📝 To-Do App
 
