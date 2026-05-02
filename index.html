@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TaskForge — Advanced To-Do</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">⬡</span>
+        <span class="brand-name">TaskForge</span>
+      </div>
+
+      <nav class="filter-nav">
+        <p class="nav-label">VIEWS</p>
+        <button class="nav-btn active" data-filter="all">
+          <span class="nav-icon">◈</span> All Tasks
+          <span class="nav-count" id="count-all">0</span>
+        </button>
+        <button class="nav-btn" data-filter="pending">
+          <span class="nav-icon">◉</span> Pending
+          <span class="nav-count" id="count-pending">0</span>
+        </button>
+        <button class="nav-btn" data-filter="completed">
+          <span class="nav-icon">◎</span> Completed
+          <span class="nav-count" id="count-completed">0</span>
+        </button>
+      </nav>
+
+      <nav class="priority-nav">
+        <p class="nav-label">PRIORITY</p>
+        <button class="nav-btn" data-filter="high">
+          <span class="dot dot-high"></span> High
+        </button>
+        <button class="nav-btn" data-filter="medium">
+          <span class="dot dot-medium"></span> Medium
+        </button>
+        <button class="nav-btn" data-filter="low">
+          <span class="dot dot-low"></span> Low
+        </button>
+      </nav>
+
+      <!-- STATS PANEL -->
+      <div class="stats-panel">
+        <p class="nav-label">STATISTICS</p>
+        <div class="stat-row">
+          <span class="stat-label">Total</span>
+          <span class="stat-val" id="stat-total">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Done</span>
+          <span class="stat-val stat-done" id="stat-done">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Overdue</span>
+          <span class="stat-val stat-overdue" id="stat-overdue">0</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="progress-label" id="progress-label">0% complete</p>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="search-input" class="search-input" placeholder="Search tasks…" />
+          <button class="clear-search" id="clear-search" title="Clear search">✕</button>
+        </div>
+        <button class="add-btn" id="open-modal-btn">+ New Task</button>
+      </header>
+
+      <section class="task-section">
+        <div class="section-header">
+          <h2 class="section-title" id="section-title">All Tasks</h2>
+          <div class="sort-wrap">
+            <label class="sort-label">Sort by:</label>
+            <select id="sort-select" class="sort-select">
+              <option value="created">Date Created</option>
+              <option value="due">Due Date</option>
+              <option value="priority">Priority</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="task-list" id="task-list">
+          <!-- Tasks injected by JS -->
+        </div>
+
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">◈</div>
+          <p class="empty-title">No tasks found</p>
+          <p class="empty-sub">Add a new task or change your filter</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">New Task</h3>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Task Title <span class="req">*</span></label>
+          <input type="text" id="task-title" class="form-input" placeholder="What needs to be done?" maxlength="120"/>
+          <span class="char-count" id="char-count">0/120</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="task-desc" class="form-input form-textarea" placeholder="Optional details…" maxlength="500" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group half">
+            <label class="form-label">Priority</label>
+            <select id="task-priority" class="form-input form-select">
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="form-group half">
+            <label class="form-label">Due Date</label>
+            <input type="date" id="task-due" class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tags (comma-separated)</label>
+          <input type="text" id="task-tags" class="form-input" placeholder="work, urgent, design…"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="modal-cancel">Cancel</button>
+        <button class="btn-save" id="modal-save">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM DELETE DIALOG -->
+  <div class="modal-overlay" id="confirm-overlay">
+    <div class="modal confirm-modal">
+      <div class="modal-header">
+        <h3>Delete Task?</h3>
+        <button class="modal-close" id="confirm-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">This action cannot be undone. Are you sure you want to delete this task?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="confirm-no">Cancel</button>
+        <button class="btn-delete" id="confirm-yes">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
